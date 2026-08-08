@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Universal Scoreboard</title>
-
-    <!-- Link the new Manifest for Android -->
-    <link rel="manifest" href="manifest.json">
     
-    <!-- The ?v=2 forces iPhones to download the new icon -->
+    <!-- App Manifest and Icons -->
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png?v=2">
     <link rel="icon" type="image/png" href="icon.png?v=2">
+    
     <style>
         body {
             font-family: -apple-system, sans-serif;
-            background: #212236;
-            color: #fff;
+            background: linear-gradient(135deg, #1e1e1e 0%, #000000 100%);
+            background-attachment: fixed;
+            color: #f0f0f0; /* Off-white */
             margin: 0;
             padding: 0;
             display: flex;
@@ -31,7 +31,7 @@
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1; /* Allows the screen to fill vertical space */
+            flex-grow: 1; 
         }
         .active {
             display: flex;
@@ -39,23 +39,23 @@
         
         /* Typography */
         h1 {
-            color: #aeb2d5;
+            color: #f0f0f0;
             margin-bottom: 30px;
             text-align: center;
         }
         h1.main-title {
-            color: #feca57; /* Popping gold/yellow */
+            color: #f0f0f0;
             font-size: 2.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
-            margin-top: 15vh; /* Pushes the title down closer to the center */
+            text-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            margin-top: 15vh; 
             line-height: 1.2;
         }
 
         /* Menu Layout */
         .menu-bottom {
-            margin-top: auto; /* Pushes the buttons to the bottom of the screen */
+            margin-top: auto; 
             width: 100%;
             padding-bottom: 20px;
             display: flex;
@@ -69,14 +69,14 @@
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 10px;
-            border: 1px solid #4b4e6d;
-            background: #1a1b2b;
-            color: white;
+            border: 1px solid #3a3a3a;
+            background: #0d0d0d;
+            color: #f0f0f0;
             font-size: 1.2rem;
             box-sizing: border-box;
         }
         .input-field::placeholder {
-            color: #6a6c8a;
+            color: #6a6a6a;
         }
         .period-toggle {
             display: flex;
@@ -84,6 +84,7 @@
             gap: 20px;
             margin-bottom: 30px;
             justify-content: center;
+            color: #f0f0f0;
         }
         .period-toggle label {
             font-size: 1.2rem;
@@ -95,14 +96,14 @@
         .period-toggle input[type="radio"] {
             width: 20px;
             height: 20px;
-            accent-color: #3c40c6;
+            accent-color: #555;
         }
         
         /* Standard Buttons */
         button {
-            background: #3c40c6;
-            color: white;
-            border: none;
+            background: linear-gradient(135deg, #2c2c2c, #0a0a0a);
+            color: #f0f0f0;
+            border: 1px solid #3a3a3a;
             border-radius: 12px;
             padding: 15px 20px;
             font-size: 1.2rem;
@@ -110,6 +111,7 @@
             margin: 10px 0;
             width: 100%;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: opacity 0.2s, transform 0.1s;
         }
         button:active {
@@ -117,19 +119,8 @@
             transform: scale(0.97);
         }
 
-        /* New Popping Buttons for Main Menu */
-        .btn-pop {
-            background: linear-gradient(135deg, #0984e3, #6c5ce7);
-            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
-            font-size: 1.3rem;
-            padding: 18px 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
-        }
-        .btn-pop-alt {
-            background: linear-gradient(135deg, #00b894, #00cec9);
-            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+        /* Main Menu Buttons */
+        .btn-pop, .btn-pop-alt {
             font-size: 1.3rem;
             padding: 18px 20px;
             text-transform: uppercase;
@@ -139,18 +130,18 @@
 
         /* Scoreboard Elements */
         .btn-green {
-            background: #2ecc71;
             width: 80px;
             height: 60px;
             font-size: 1.5rem;
             border-radius: 10px;
+            border: 1px solid rgba(46, 204, 113, 0.4);
         }
         .btn-red {
-            background: #ff4757;
             width: 80px;
             height: 60px;
             font-size: 1.5rem;
             border-radius: 10px;
+            border: 1px solid rgba(255, 71, 87, 0.4);
         }
         .team-box {
             display: flex;
@@ -161,7 +152,7 @@
         }
         .team-name {
             font-size: 1.8rem;
-            color: #aeb2d5;
+            color: #f0f0f0;
             margin-bottom: 10px;
             border-bottom: 2px dashed transparent;
             padding-bottom: 5px;
@@ -169,12 +160,13 @@
             text-align: center;
         }
         .team-name:focus {
-            border-bottom: 2px dashed #ff4757;
+            border-bottom: 2px dashed #555;
         }
         .score {
             font-size: 6rem;
             font-weight: bold;
             margin-bottom: 15px;
+            color: #f0f0f0;
             font-variant-numeric: tabular-nums;
         }
         .score-controls {
@@ -182,7 +174,8 @@
             gap: 15px;
         }
         .timer-bar {
-            background: #1a1b2b;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid #3a3a3a;
             padding: 15px 20px;
             border-radius: 12px;
             width: 100%;
@@ -193,6 +186,7 @@
             margin-bottom: 30px;
             font-size: 1.5rem;
             font-weight: bold;
+            color: #f0f0f0;
         }
         .timer-display {
             display: flex;
@@ -200,8 +194,6 @@
             gap: 15px;
         }
         .btn-pause {
-            background: #feca57;
-            color: #212236;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -213,7 +205,8 @@
             font-size: 1.2rem;
         }
         .history-card {
-            background: #2a2c45;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid #3a3a3a;
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 15px;
@@ -221,17 +214,19 @@
             box-sizing: border-box;
         }
         .match-desc {
-            color: #feca57;
+            color: #f0f0f0;
             font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 5px;
+            border-bottom: 1px solid #3a3a3a;
+            padding-bottom: 5px;
         }
         .q-row {
             display: flex;
             justify-content: space-between;
             margin: 5px 0;
-            color: #aeb2d5;
+            color: #b0b0b0;
         }
         .total-row {
             display: flex;
@@ -239,11 +234,9 @@
             margin-top: 10px;
             font-weight: bold;
             font-size: 1.2rem;
-            border-top: 1px solid #4b4e6d;
+            border-top: 1px solid #3a3a3a;
             padding-top: 5px;
-        }
-        .ctrl-btn {
-            background: #575f8f;
+            color: #f0f0f0;
         }
     </style>
 </head>
@@ -277,7 +270,7 @@
         </div>
 
         <button onclick="beginMatch()">Start Game</button>
-        <button onclick="show('menu')" style="background:transparent; color:#888; margin-top:5px;">Cancel</button>
+        <button onclick="show('menu')" style="background:transparent; border:none; box-shadow:none; color:#888; margin-top:5px;">Cancel</button>
     </div>
 
     <!-- Scoreboard Screen -->
@@ -286,7 +279,6 @@
             <span id="period-label">Q1</span>
             <div class="timer-display">
                 <span id="time-label">00:00</span>
-                <!-- Pause/Play Button -->
                 <button id="btn-pause" class="btn-pause" style="display:none;" onclick="togglePause()">⏸</button>
             </div>
         </div>
@@ -309,11 +301,11 @@
             </div>
         </div>
 
-        <button id="btn-start" class="ctrl-btn" onclick="startTimer()">Start</button>
-        <button id="btn-end" class="ctrl-btn" style="display:none;" onclick="endPeriod()">End Period</button>
-        <button id="btn-cont" class="ctrl-btn" style="display:none;" onclick="continuePeriod()">Continue</button>
-        <button id="btn-finish" class="ctrl-btn" style="display:none;" onclick="finishMatch()">End Match & Save</button>
-        <button onclick="show('menu')" style="background:transparent; color:#888; margin-top:20px;">Abandon Match</button>
+        <button id="btn-start" onclick="startTimer()">Start</button>
+        <button id="btn-end" style="display:none;" onclick="endPeriod()">End Period</button>
+        <button id="btn-cont" style="display:none;" onclick="continuePeriod()">Continue</button>
+        <button id="btn-finish" style="display:none;" onclick="finishMatch()">End Match & Save</button>
+        <button onclick="show('menu')" style="background:transparent; border:none; box-shadow:none; color:#888; margin-top:20px;">Abandon Match</button>
     </div>
 
     <!-- History Screen -->
@@ -513,7 +505,7 @@
             list.innerHTML = '';
             
             if (h.length === 0) {
-                list.innerHTML = '<p style="color:#aeb2d5;">No matches saved yet.</p>';
+                list.innerHTML = '<p style="color:#b0b0b0;">No matches saved yet.</p>';
             } else {
                 h.slice().reverse().forEach(m => {
                     let html = `
@@ -521,7 +513,7 @@
                         <div class="match-desc">${m.desc}</div>
                         <div class="total-row" style="border:none; margin-top:0;">
                             <span>${m.t1Name} vs ${m.t2Name}</span>
-                            <span style="font-weight:normal; font-size:1rem;">${m.date}</span>
+                            <span style="font-weight:normal; font-size:1rem; color:#b0b0b0;">${m.date}</span>
                         </div>
                         <div class="total-row" style="border:none; margin-bottom:10px;">
                             <span style="font-size:1.5rem">${m.t1Total}</span>
