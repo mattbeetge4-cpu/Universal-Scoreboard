@@ -24,15 +24,38 @@
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
+            flex-grow: 1; /* Allows the screen to fill vertical space */
         }
         .active {
             display: flex;
         }
+        
+        /* Typography */
         h1 {
             color: #aeb2d5;
             margin-bottom: 30px;
             text-align: center;
         }
+        h1.main-title {
+            color: #feca57; /* Popping gold/yellow */
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
+            margin-top: 15vh; /* Pushes the title down closer to the center */
+            line-height: 1.2;
+        }
+
+        /* Menu Layout */
+        .menu-bottom {
+            margin-top: auto; /* Pushes the buttons to the bottom of the screen */
+            width: 100%;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         /* Form Inputs for Setup Screen */
         .input-field {
             width: 100%;
@@ -68,6 +91,7 @@
             accent-color: #3c40c6;
         }
         
+        /* Standard Buttons */
         button {
             background: #3c40c6;
             color: white;
@@ -79,11 +103,34 @@
             margin: 10px 0;
             width: 100%;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
         }
         button:active {
             opacity: 0.8;
+            transform: scale(0.97);
         }
+
+        /* New Popping Buttons for Main Menu */
+        .btn-pop {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+            font-size: 1.3rem;
+            padding: 18px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+        .btn-pop-alt {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+            font-size: 1.3rem;
+            padding: 18px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        /* Scoreboard Elements */
         .btn-green {
             background: #2ecc71;
             width: 80px;
@@ -197,9 +244,12 @@
 
     <!-- Main Menu -->
     <div id="menu" class="screen active">
-        <h1>Scoreboard Menu</h1>
-        <button onclick="openSetup()">Start New Match</button>
-        <button onclick="viewHistory()">View prev matches</button>
+        <h1 class="main-title">Universal Scoreboard</h1>
+        
+        <div class="menu-bottom">
+            <button class="btn-pop" onclick="openSetup()">Start New Match</button>
+            <button class="btn-pop-alt" onclick="viewHistory()">View Prev Matches</button>
+        </div>
     </div>
 
     <!-- Match Setup Screen -->
