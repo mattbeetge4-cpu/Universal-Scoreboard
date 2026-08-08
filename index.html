@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Universal Scoreboard</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #212236;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-direction: column;
+            align-items: center;
+        }
+        .active {
+            display: flex;
+        }
+        h1 {
+            color: #aeb2d5;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        /* Form Inputs for Setup Screen */
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid #4b4e6d;
+            background: #1a1b2b;
+            color: white;
+            font-size: 1.2rem;
+            box-sizing: border-box;
+        }
+        .input-field::placeholder {
+            color: #6a6c8a;
+        }
+        .period-toggle {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        .period-toggle label {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .period-toggle input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3c40c6;
+        }
+        
+        button {
+            background: #3c40c6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        .btn-green {
+            background: #2ecc71;
+            width: 80px;
+            height: 60px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+        }
+        .btn-red {
+            background: #ff4757;
+            width: 80px;
+            height: 60px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+        }
+        .team-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .team-name {
+            font-size: 1.8rem;
+            color: #aeb2d5;
+            margin-bottom: 10px;
+            border-bottom: 2px dashed transparent;
+            padding-bottom: 5px;
+            outline: none;
+            text-align: center;
+        }
+        .team-name:focus {
+            border-bottom: 2px dashed #ff4757;
+        }
+        .score {
+            font-size: 6rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-variant-numeric: tabular-nums;
+        }
+        .score-controls {
+            display: flex;
+            gap: 15px;
+        }
+        .timer-bar {
+            background: #1a1b2b;
+            padding: 15px 20px;
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-pause {
+            background: #feca57;
+            color: #212236;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .history-card {
+            background: #2a2c45;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .match-desc {
+            color: #feca57;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .q-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            color: #aeb2d5;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-top: 1px solid #4b4e6d;
+            padding-top: 5px;
+        }
+        .ctrl-btn {
+            background: #575f8f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Menu -->
+    <div id="menu" class="screen active">
+        <h1>Scoreboard Menu</h1>
+        <button onclick="openSetup()">Start New Match</button>
+        <button onclick="viewHistory()">View prev matches</button>
+    </div>
+
+    <!-- Match Setup Screen -->
+    <div id="setup" class="screen">
+        <h1>Match Setup</h1>
+        
+        <input type="text" id="setup-desc" class="input-field" placeholder="Description (e.g. Finals, U12 A-Team)">
+        <input type="text" id="setup-t1" class="input-field" placeholder="Team 1 Name">
+        <input type="text" id="setup-t2" class="input-field" placeholder="Team 2 Name">
+        
+        <div class="period-toggle">
+            <label>
+                <input type="radio" name="setup-periods" value="quarters" checked> Quarters
+            </label>
+            <label>
+                <input type="radio" name="setup-periods" value="halves"> Halves
+            </label>
+        </div>
+
+        <button onclick="beginMatch()">Start Game</button>
+        <button onclick="show('menu')" style="background:transparent; color:#888; margin-top:5px;">Cancel</button>
+    </div>
+
+    <!-- Scoreboard Screen -->
+    <div id="scoreboard" class="screen">
+        <div class="timer-bar">
+            <span id="period-label">Q1</span>
+            <div class="timer-display">
+                <span id="time-label">00:00</span>
+                <!-- Pause/Play Button -->
+                <button id="btn-pause" class="btn-pause" style="display:none;" onclick="togglePause()">⏸</button>
+            </div>
+        </div>
+
+        <div class="team-box">
+            <div class="team-name" id="name1" contenteditable="true">Team 1</div>
+            <div class="score" id="s1">0</div>
+            <div class="score-controls">
+                <button class="btn-red" onclick="upd(1,-1)">-1</button>
+                <button class="btn-green" onclick="upd(1,1)">+1</button>
+            </div>
+        </div>
+
+        <div class="team-box">
+            <div class="team-name" id="name2" contenteditable="true">Team 2</div>
+            <div class="score" id="s2">0</div>
+            <div class="score-controls">
+                <button class="btn-red" onclick="upd(2,-1)">-1</button>
+                <button class="btn-green" onclick="upd(2,1)">+1</button>
+            </div>
+        </div>
+
+        <button id="btn-start" class="ctrl-btn" onclick="startTimer()">Start</button>
+        <button id="btn-end" class="ctrl-btn" style="display:none;" onclick="endPeriod()">End Period</button>
+        <button id="btn-cont" class="ctrl-btn" style="display:none;" onclick="continuePeriod()">Continue</button>
+        <button id="btn-finish" class="ctrl-btn" style="display:none;" onclick="finishMatch()">End Match & Save</button>
+        <button onclick="show('menu')" style="background:transparent; color:#888; margin-top:20px;">Abandon Match</button>
+    </div>
+
+    <!-- History Screen -->
+    <div id="history" class="screen">
+        <h1>Previous Matches</h1>
+        <div id="history-list"></div>
+        <button onclick="show('menu')">Back to Menu</button>
+    </div>
+
+    <script>
+        // Game State Variables
+        let matchDesc = '';
+        let periodType = 'quarters';
+        let maxPeriods = 4;
+        let currentPeriod = 1;
+        
+        let scores = [0, 0];
+        let periodStartScores = [0, 0];
+        let timer = null;
+        let secs = 0;
+        let matchData = [];
+        let isPaused = false;
+        
+        window.sessionHistory = window.sessionHistory || [];
+
+        function show(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // Open Setup Menu and clear previous inputs
+        function openSetup() {
+            document.getElementById('setup-desc').value = '';
+            document.getElementById('setup-t1').value = '';
+            document.getElementById('setup-t2').value = '';
+            document.querySelector('input[name="setup-periods"][value="quarters"]').checked = true;
+            show('setup');
+        }
+
+        // Apply Setup Settings and Build Scoreboard
+        function beginMatch() {
+            matchDesc = document.getElementById('setup-desc').value.trim() || 'Unnamed Match';
+            let t1Name = document.getElementById('setup-t1').value.trim() || 'Team 1';
+            let t2Name = document.getElementById('setup-t2').value.trim() || 'Team 2';
+            
+            periodType = document.querySelector('input[name="setup-periods"]:checked').value;
+            maxPeriods = (periodType === 'halves') ? 2 : 4;
+
+            scores = [0, 0];
+            periodStartScores = [0, 0];
+            currentPeriod = 1;
+            secs = 0;
+            isPaused = false;
+            matchData = [];
+            clearInterval(timer);
+            
+            // Set Scoreboard Text
+            document.getElementById('s1').innerText = '0';
+            document.getElementById('s2').innerText = '0';
+            document.getElementById('name1').innerText = t1Name;
+            document.getElementById('name2').innerText = t2Name;
+            document.getElementById('time-label').innerText = '00:00';
+            
+            updatePeriodLabel();
+            
+            // Reset Buttons
+            document.getElementById('btn-start').style.display = 'block';
+            document.getElementById('btn-pause').style.display = 'none';
+            document.getElementById('btn-pause').innerText = '⏸';
+            document.getElementById('btn-end').style.display = 'none';
+            document.getElementById('btn-cont').style.display = 'none';
+            document.getElementById('btn-finish').style.display = 'none';
+            
+            show('scoreboard');
+        }
+
+        function updatePeriodLabel() {
+            let prefix = (periodType === 'halves') ? 'H' : 'Q';
+            document.getElementById('period-label').innerText = prefix + currentPeriod;
+        }
+
+        function upd(t, v) {
+            let i = t - 1;
+            scores[i] += v;
+            if (scores[i] < 0) scores[i] = 0;
+            document.getElementById('s' + t).innerText = scores[i];
+        }
+
+        function formatTime(s) {
+            let m = Math.floor(s / 60);
+            let rs = s % 60;
+            return (m < 10 ? '0' : '') + m + ':' + (rs < 10 ? '0' : '') + rs;
+        }
+
+        function tick() {
+            secs++;
+            document.getElementById('time-label').innerText = formatTime(secs);
+        }
+
+        function startTimer() {
+            document.getElementById('btn-start').style.display = 'none';
+            document.getElementById('btn-cont').style.display = 'none';
+            document.getElementById('btn-end').style.display = 'block';
+            
+            // Update "End Period" text based on selection
+            let periodText = (periodType === 'halves') ? 'End Half' : 'End Quarter';
+            document.getElementById('btn-end').innerText = periodText;
+
+            document.getElementById('btn-pause').style.display = 'flex'; 
+            isPaused = false;
+            document.getElementById('btn-pause').innerText = '⏸';
+            
+            timer = setInterval(tick, 1000);
+        }
+
+        function togglePause() {
+            let pauseBtn = document.getElementById('btn-pause');
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                clearInterval(timer);
+                pauseBtn.innerText = '▶'; 
+            } else {
+                timer = setInterval(tick, 1000);
+                pauseBtn.innerText = '⏸'; 
+            }
+        }
+
+        function endPeriod() {
+            clearInterval(timer);
+            
+            let t1q = scores[0] - periodStartScores[0];
+            let t2q = scores[1] - periodStartScores[1];
+            
+            let prefix = (periodType === 'halves') ? 'H' : 'Q';
+            let label = prefix + currentPeriod;
+            
+            matchData.push({ label: label, t1: t1q, t2: t2q });
+            
+            periodStartScores[0] = scores[0];
+            periodStartScores[1] = scores[1];
+            
+            document.getElementById('btn-end').style.display = 'none';
+            document.getElementById('btn-pause').style.display = 'none'; 
+            
+            // Check against dynamic maxPeriods (2 for halves, 4 for quarters)
+            if (currentPeriod < maxPeriods) {
+                document.getElementById('btn-cont').style.display = 'block';
+            } else {
+                document.getElementById('btn-finish').style.display = 'block';
+            }
+        }
+
+        function continuePeriod() {
+            currentPeriod++;
+            updatePeriodLabel();
+            startTimer();
+        }
+
+        function finishMatch() {
+            let m = {
+                desc: matchDesc,
+                date: new Date().toLocaleDateString(),
+                t1Name: document.getElementById('name1').innerText,
+                t2Name: document.getElementById('name2').innerText,
+                t1Total: scores[0],
+                t2Total: scores[1],
+                periods: matchData
+            };
+            
+            let h = [];
+            try {
+                h = JSON.parse(localStorage.getItem('universalScoreHistory') || '[]');
+            } catch(e) {
+                h = window.sessionHistory;
+            }
+            
+            h.push(m);
+            
+            try {
+                localStorage.setItem('universalScoreHistory', JSON.stringify(h));
+            } catch(e) {
+                window.sessionHistory = h;
+            }
+            show('menu');
+        }
+
+        function viewHistory() {
+            let h = [];
+            try {
+                h = JSON.parse(localStorage.getItem('universalScoreHistory') || '[]');
+            } catch(e) {
+                h = window.sessionHistory || [];
+            }
+            
+            let list = document.getElementById('history-list');
+            list.innerHTML = '';
+            
+            if (h.length === 0) {
+                list.innerHTML = '<p style="color:#aeb2d5;">No matches saved yet.</p>';
+            } else {
+                h.slice().reverse().forEach(m => {
+                    let html = `
+                    <div class="history-card">
+                        <div class="match-desc">${m.desc}</div>
+                        <div class="total-row" style="border:none; margin-top:0;">
+                            <span>${m.t1Name} vs ${m.t2Name}</span>
+                            <span style="font-weight:normal; font-size:1rem;">${m.date}</span>
+                        </div>
+                        <div class="total-row" style="border:none; margin-bottom:10px;">
+                            <span style="font-size:1.5rem">${m.t1Total}</span>
+                            <span style="font-size:1.5rem">${m.t2Total}</span>
+                        </div>`;
+                    
+                    m.periods.forEach(p => {
+                        html += `<div class="q-row"><span>${p.label}</span><span>${p.t1} - ${p.t2}</span></div>`;
+                    });
+                    
+                    html += `</div>`;
+                    list.innerHTML += html;
+                });
+            }
+            show('history');
+        }
+    </script>
+</body>
+</html>
